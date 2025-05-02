@@ -1,0 +1,9 @@
+[
+    { "username": "agronom",  "password": "agro123", "role": "Agronomist" },
+    { "username": "analyst",  "password": "analyst1", "role": "Analyst"   },
+    { "username": "manager",  "password": "mgrpass",   "role": "Manager"   },
+    { "username": "droneop",  "password": "drone234",  "role": "DroneOperator" },
+    { "username": "mech",     "password": "mech789",   "role": "Mechanic"  },
+    { "username": "soil",     "password": "soil456",   "role": "SoilSpecialist" }
+  ]
+  

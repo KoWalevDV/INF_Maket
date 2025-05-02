@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <!-- Подключаем собранный CSS -->
+  <link href="./styles/style.css" rel="stylesheet"/>
+  <title>Agro AI — Вход</title>
+</head>
+<body class="bg-gradient-to-br from-green-400 to-gray-500 h-screen flex items-center justify-center">
+  <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl shadow-xl p-10 w-96">
+    <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-6">Agro AI</h1>
+    <input id="user" type="text" placeholder="Имя пользователя"
+           class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300"/>
+    <input id="pass" type="password" placeholder="Пароль"
+           class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300"/>
+    <button id="submit"
+            class="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition">
+      Войти
+    </button>
+    <p id="error" class="text-red-500 mt-3 text-center hidden"></p>
+  </div>
+
+  <script>
+    const user = document.getElementById('user');
+    const pass = document.getElementById('pass');
+    const err  = document.getElementById('error');
+    document.getElementById('submit').onclick = () => {
+      window.electronAPI.loginSubmit({
+        username: user.value,
+        password: pass.value
+      });
+    };
+    window.electronAPI.onLoginFailed(msg => {
+      err.textContent = msg;
+      err.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
