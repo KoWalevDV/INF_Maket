@@ -6,6 +6,7 @@ const navItems = [
   { key: 'Monitoring', label: 'Мониторинг', icon: Home },
   { key: 'AutoMonitoring', label: 'Автомониторинг', icon: Database },
   { key: 'Forecast', label: 'Прогноз', icon: BarChart2 },
+  { key: 'ForecastManager', label: 'Прогноз', icon: BarChart2 },
   { key: 'DroneFeed', label: 'Дроны', icon: ScanEye },
   { key: 'FieldMap',     label: 'Карта поля',      icon: MapPin },
 ];
@@ -13,7 +14,7 @@ const navItems = [
 export default function Sidebar({ modules, active, setActive }) {
   return (
     <nav className="w-72 bg-white border-r border-gray-200 p-6 flex flex-col">
-      <h2 className="text-2xl font-bold mb-8 text-primary-700">ИИС Agro AI</h2>
+      <h2 className="text-2xl font-bold mb-8 text-primary-700">Agro AI</h2>
       <ul className="space-y-4 flex-1">
         {navItems
           .filter(i => modules.includes(i.key))

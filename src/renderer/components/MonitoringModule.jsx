@@ -174,7 +174,7 @@ export default function MonitoringModule() {
 
       {/* Задачи на работы */}
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold mb-2">Задачи на выполнение работ</h2>
+        <h2 className="text-xl font-semibold mb-2">Задачи</h2>
         {tasks.map(t => (
           <div key={t.id} className="bg-white p-4 rounded-lg shadow flex items-center justify-between">
             <div className="flex-1">

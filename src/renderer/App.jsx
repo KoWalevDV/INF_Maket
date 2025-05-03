@@ -6,6 +6,7 @@ import SecurityModule from './components/SecurityModule';
 import MonitoringModule from './components/MonitoringModule';
 import AutoMonitoringModule from './components/AutoMonitoringModule';
 import ForecastModule from './components/ForecastModule';
+import ForecastManager from './components/ForecastManager';
 import FieldMapModule from './components/FieldMapModule';
 import MechanicDashboard from './components/MechanicDashboard';
 import AgronomistDashboard from './components/AgronomistDashboard';
@@ -19,7 +20,7 @@ import DroneFeedModule from './components/DroneFeedModule'
 const access = {
    Agronomist:     ['AutoMonitoring', 'Forecast','Agronomist', 'FieldMap'],
    Analyst:        ['Forecast', 'Security',    'FieldMap'],
-   Manager:        ['Monitoring', 'Forecast',  'FieldMap'],
+   Manager:        ['Monitoring', 'ForecastManager',  'FieldMap'],
    DroneOperator:  ['Security','DroneOperator','DroneFeed', 'FieldMap'],
    Mechanic:       ['Monitoring','Mechanic', 'FieldMap'],
    SoilSpecialist: ['AutoMonitoring', 'FieldMap'],
@@ -52,6 +53,7 @@ const access = {
          case 'Monitoring':     return <MonitoringModule {...props} />;
          case 'AutoMonitoring': return <AutoMonitoringModule {...props} />;
          case 'Forecast':       return <ForecastModule />;
+         case 'ForecastManager':return <ForecastManager />;
          case 'Mechanic':       return <MechanicDashboard />;
          case 'Agronomist':     return <AgronomistDashboard />;
          case 'DroneOperator':  return <DroneOperatorDashboard />;
