@@ -244,32 +244,42 @@ export default function ForecastModule() {
       {/* 4. Тепловая карта */}
       <section>
         <h3 className="text-xl font-semibold mb-2">Тепловая карта прогнозов</h3>
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-white rounded-lg shadow p-4 overflow-hidden">
           <div className="flex justify-between mb-2">
             <div className="text-sm text-gray-600">Секторы</div>
             <div className="text-sm text-gray-600">Месяцы</div>
           </div>
           <div className="flex justify-center">
-            <HeatMap
-              xLabels={months}
-              yLabels={rowLabels}
-              data={heatmapData}
-              squares
-              height={120}
-              width={400}
-              cellStyle={(background, value, min, max) => {
-                const ratio = (value - min) / (max - min);
-                const lightness = 100 - Math.round(ratio * 100);
-                return {
-                  background: `hsl(200, 80%, ${lightness}%)`,
-                  color: lightness < 50 ? '#fff' : '#000',
-                  fontSize: '0.9rem',
-                  padding: '8px',
-                  textAlign: 'center'
-                };
-              }}
-              cellRender={value => <div>{value}</div>}
-            />
+            <div className="relative">
+              <div className="absolute -left-20 top-0 bottom-0 flex flex-col justify-around text-sm text-gray-600">
+                {rowLabels.map((label, index) => (
+                  <div key={index} className="h-10 flex items-center">{label}</div>
+                ))}
+              </div>
+              <HeatMap
+                xLabels={months}
+                yLabels={['', '', '']}
+                data={heatmapData}
+                squares
+                height={120}
+                width={400}
+                cellStyle={(background, value, min, max) => {
+                  const ratio = (value - min) / (max - min);
+                  const lightness = 100 - Math.round(ratio * 100);
+                  return {
+                    background: `hsl(200, 80%, ${lightness}%)`,
+                    color: lightness < 50 ? '#fff' : '#000',
+                    fontSize: '0.9rem',
+                    padding: '8px',
+                    textAlign: 'center'
+                  };
+                }}
+                cellRender={value => <div>{value}</div>}
+                yLabelStyle={() => ({
+                  display: 'none'
+                })}
+              />
+            </div>
           </div>
           <div className="mt-2 text-sm text-gray-600 text-center">
             Урожайность (ц/га)

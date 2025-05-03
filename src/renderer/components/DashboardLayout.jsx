@@ -17,24 +17,35 @@ const WeatherWidget = () => {
     ]
   };
 
+  const getIconAnimation = (Icon) => {
+    if (Icon === Sun) {
+      return 'hover:text-yellow-500 hover:animate-spin';
+    } else if (Icon === Cloud) {
+      return 'hover:text-emerald-600 hover:animate-float';
+    } else if (Icon === CloudRain) {
+      return 'hover:text-gray-600 hover:animate-rain';
+    }
+    return '';
+  };
+
   return (
-    <div className="flex items-center space-x-4 bg-blue-50 rounded-lg px-4 py-2">
+    <div className="flex items-center space-x-4 bg-emerald-50 rounded-lg px-4 py-2">
       <div className="flex items-center space-x-2">
-        <Cloud className="w-6 h-6 text-blue-500" />
+        <Cloud className="w-6 h-6 text-emerald-600 hover:text-emerald-600 hover:animate-float" />
         <div>
-          <div className="text-lg font-medium text-blue-700">{weather.temperature}</div>
-          <div className="text-sm text-blue-600">{weather.condition}</div>
+          <div className="text-lg font-medium text-emerald-700">{weather.temperature}</div>
+          <div className="text-sm text-emerald-600">{weather.condition}</div>
         </div>
       </div>
-      <div className="h-8 w-px bg-blue-200"></div>
+      <div className="h-8 w-px bg-emerald-200"></div>
       <div className="flex space-x-4">
         {weather.forecast.map((day, index) => {
           const Icon = day.icon;
           return (
-            <div key={index} className="flex flex-col items-center">
-              <Icon className="w-5 h-5 text-blue-500" />
-              <span className="text-xs text-blue-600">{day.day}</span>
-              <span className="text-sm font-medium text-blue-700">{day.temp}</span>
+            <div key={index} className="flex flex-col items-center group">
+              <Icon className={`w-5 h-5 text-emerald-600 transition-all duration-300 ${getIconAnimation(Icon)}`} />
+              <span className="text-xs text-emerald-600">{day.day}</span>
+              <span className="text-sm font-medium text-emerald-700">{day.temp}</span>
             </div>
           );
         })}
@@ -42,6 +53,30 @@ const WeatherWidget = () => {
     </div>
   );
 };
+
+// Добавляем стили для анимаций
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  
+  @keyframes rain {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(2px); }
+    100% { transform: translateY(0); }
+  }
+
+  .animate-float {
+    animation: float 2s ease-in-out infinite;
+  }
+
+  .animate-rain {
+    animation: rain 1s ease-in-out infinite;
+  }
+`;
+document.head.appendChild(style);
 
 export default function DashboardLayout({ role, modules, active, setActive, selectedField, setSelectedField, children }) {
   const roleNames = {

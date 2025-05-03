@@ -45,9 +45,9 @@ const incidents = [
   }
 ];
 
-// Создаем синий маркер
-const blueIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+// Создаем красный маркер
+const redIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
@@ -81,7 +81,7 @@ export default function SecurityModule({ fieldKey }) {
           {/* Контуры поля */}
           <Polygon
             positions={allFieldPolygon}
-            pathOptions={{ color: 'yellow', weight: 4, fillOpacity: 0 }}
+            pathOptions={{ color: 'yellow', weight: 2, fillOpacity: 0 }}
           />
           {highlight && (
             <Polygon
@@ -95,26 +95,28 @@ export default function SecurityModule({ fieldKey }) {
             <Marker
               key={evt.id}
               position={evt.coords}
-              icon={blueIcon}
+              icon={redIcon}
             >
               <Popup
                 minWidth={200}
-                maxWidth={400}
+                maxWidth={200}
                 className="p-1"
+                position="bottom"
+                offset={[0, -10]}
               >
-                <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-1 w-[200px]">
                   <img
                     src={incidentImages[evt.type]}
                     alt={`Видео — ${evt.type}`}
-                    className="w-full h-32 object-cover rounded-lg mb-2"
+                    className="w-full h-24 object-cover rounded-lg mb-1"
                   />
-                  <div className="text-sm space-y-1">
+                  <div className="text-xs space-y-0.5">
+                    <p className="text-sm font-medium mb-0.5">DJI Mavic 3T 11488</p>
                     <p><strong>Сектор:</strong> {evt.sector}</p>
                     <p><strong>Коорд.:</strong> {evt.coords[0].toFixed(3)}, {evt.coords[1].toFixed(3)}</p>
-                    <p><strong>Обнаружено:</strong> {evt.detectedBy}</p>
                     <p><strong>Угроза:</strong> {evt.description}</p>
                     <p><strong>Рекомендации:</strong></p>
-                    <ul className="list-disc list-inside ml-4">
+                    <ul className="list-disc list-inside ml-2">
                       {evt.recommendations.map((r, i) => <li key={i}>{r}</li>)}
                     </ul>
                   </div>
