@@ -3,15 +3,15 @@ import React from 'react';
 import { Wrench, AlertTriangle, Calendar } from 'lucide-react';
 
 const faults = [
-  { id: 1, machine: 'Трактор #5', issue: 'Датчик давления', time: '2025-05-03 09:30' },
-  { id: 2, machine: 'Комбайн #2', issue: 'Перегрев радиатора', time: '2025-05-03 10:45' },
+  { id: 1, machine: 'Трактор МТЗ-82', issue: 'Датчик давления', time: '2025-05-03 09:30' },
+  { id: 2, machine: 'Комбайн К-744', issue: 'Перегрев радиатора', time: '2025-05-03 10:45' },
 ];
 
 // Расширенная CAN-таблица из 5 строк
 const canTable = [
   {
-    id: 'CAN1',
-    machine: 'Трактор #5',
+    id: 'CAN МТЗ-82',
+    machine: 'Трактор МТЗ-82',
     oilLevel: '4.2 л',
     pressure: '2.1 бар',
     temp: '75 °C',
@@ -24,8 +24,8 @@ const canTable = [
     errorCount: 0
   },
   {
-    id: 'CAN2',
-    machine: 'Комбайн #2',
+    id: 'CAN К-744',
+    machine: 'Комбайн К-744',
     oilLevel: '3.8 л',
     pressure: '2.4 бар',
     temp: '80 °C',
@@ -38,8 +38,8 @@ const canTable = [
     errorCount: 1
   },
   {
-    id: 'CAN3',
-    machine: 'Опрыскиватель #1',
+    id: 'CAN ОП-2000',
+    machine: 'Опрыскиватель ОП-2000',
     oilLevel: '2.5 л',
     pressure: '1.8 бар',
     temp: '70 °C',
@@ -52,8 +52,8 @@ const canTable = [
     errorCount: 0
   },
   {
-    id: 'CAN4',
-    machine: 'Бульдозер #4',
+    id: 'CAN Т-150',
+    machine: 'Трактор Т-150',
     oilLevel: '5.0 л',
     pressure: '2.5 бар',
     temp: '78 °C',
@@ -66,8 +66,8 @@ const canTable = [
     errorCount: 2
   },
   {
-    id: 'CAN5',
-    machine: 'Плуг #3',
+    id: 'CAN СЗ-3.6',
+    machine: 'Сеялка СЗ-3.6',
     oilLevel: '3.0 л',
     pressure: '2.0 бар',
     temp: '73 °C',

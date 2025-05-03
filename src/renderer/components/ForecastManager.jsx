@@ -5,18 +5,18 @@ import Modal from './Modal'; // допустим, у вас есть прост�
 
 // 1) Прогнозы по CAN-ID: теперь есть статус «предупреждение» (синий) и «сбой» (красный)
 const canPredictions = [
-  { id: 'CAN1', issue: 'Датчик давления', recommendation: 'Проверить давление масла и заменить фильтр', status: 'warning' },
-  { id: 'CAN2', issue: 'Перегрев радиатора', recommendation: 'Почистить радиатор и проверить термостат', status: 'alert' },
-  { id: 'CAN3', issue: 'Низкий уровень масла', recommendation: 'Долить масло до нормы', status: 'warning' },
-  { id: 'CAN4', issue: 'Сбой насоса', recommendation: 'Проверить работу насоса смазки', status: 'alert' },
-  { id: 'CAN5', issue: 'Коррозия контактов', recommendation: 'Очистить и обработать контакты антиокислителем', status: 'warning' },
+  { id: 'CAN МТЗ-82', issue: 'Датчик давления', recommendation: 'Проверить давление масла и заменить фильтр', status: 'warning' },
+  { id: 'CAN К-744', issue: 'Перегрев радиатора', recommendation: 'Почистить радиатор и проверить термостат', status: 'alert' },
+  { id: 'CAN ОП-2000', issue: 'Низкий уровень масла', recommendation: 'Долить масло до нормы', status: 'warning' },
+  { id: 'CAN Т-150', issue: 'Сбой насоса', recommendation: 'Проверить работу насоса смазки', status: 'alert' },
+  { id: 'CAN СЗ-3.6', issue: 'Коррозия контактов', recommendation: 'Очистить и обработать контакты антиокислителем', status: 'warning' },
 ];
 
 // 2) Изначальный список задач — время окончания «–»
 const initialRepairs = [
-  { id: 'CAN1', issue: 'Датчик давления', action: 'Заменить фильтр и прокладки', start: '2025-05-04 09:00', end: '-', critical: false },
-  { id: 'CAN2', issue: 'Перегрев радиатора', action: 'Промыть радиатор, заменить термостат', start: '2025-05-05 10:00', end: '-', critical: true },
-  { id: 'CAN3', issue: 'Низкий уровень масла', action: 'Долить моторное масло', start: '2025-05-04 08:30', end: '-', critical: false },
+  { id: 'CAN МТЗ-82', issue: 'Датчик давления', action: 'Заменить фильтр и прокладки', start: '2025-05-04 09:00', end: '-', critical: false },
+  { id: 'CAN К-744', issue: 'Перегрев радиатора', action: 'Промыть радиатор, заменить термостат', start: '2025-05-05 10:00', end: '-', critical: true },
+  { id: 'CAN ОП-2000', issue: 'Низкий уровень масла', action: 'Долить моторное масло', start: '2025-05-04 08:30', end: '-', critical: false },
 ];
 
 // 3) Список сервисов для «записи»

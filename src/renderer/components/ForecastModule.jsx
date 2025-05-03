@@ -1,4 +1,3 @@
-
 // src/renderer/components/ForecastModule.jsx
 import React, { useState } from 'react';
 import HeatMap from 'react-heatmap-grid';
@@ -47,9 +46,10 @@ const risks = [
 
 // 2. Прогноз урожайности по годам
 const historicalYield = [
-  { year: '2023', yield: 30 },
-  { year: '2024', yield: 45 },
-  { year: '2025', yield: 38 }
+  { year: '2023', yield: 30, forecast: 32 },
+  { year: '2024', yield: 45, forecast: 42 },
+  { year: '2025', yield: 38, forecast: 38 },
+  { year: '2026', yield: null, forecast: 45 }
 ];
 
 // 3. Прогноз урожайности по сезонам
@@ -90,7 +90,7 @@ const recommendations = [
 ];
 
 const seasons    = ['Весна', 'Лето', 'Осень'];
-const rowLabels  = ['Ряд 1', 'Ряд 2', 'Ряд 3'];
+const rowLabels  = ['Сектор 1', 'Сектор 2', 'Сектор 3'];
 
 export default function ForecastModule() {
   const [selectedRisk, setSelectedRisk] = useState(null);
@@ -144,19 +144,20 @@ export default function ForecastModule() {
           <h3 className="font-medium mb-2">Прогноз урожайности (годовой)</h3>
           <ResponsiveContainer width="100%" height="80%">
             <BarChart data={historicalYield} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="year" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="yield" fill="#22C55E" />
-              {/* линия тренда по простому линейному аппроксимационному уравнению */}
+              <YAxis label={{ value: 'Урожайность (ц/га)', angle: -90, position: 'insideLeft' }} />
+              <Tooltip 
+                formatter={(value) => [`${value} ц/га`, '']}
+                labelFormatter={(label) => `Год: ${label}`}
+              />
+              <Bar dataKey="yield" fill="#22C55E" name="Фактическая урожайность" />
+              <Bar dataKey="forecast" fill="#3B82F6" name="Прогноз" />
               <ReferenceLine
-                y={
-                  // a*x + b; расчёт на основе двух крайних точек
-                  (historicalYield[0].yield + historicalYield[historicalYield.length-1].yield) / 2
-                }
-                stroke="red"
+                y={40}
+                stroke="#EF4444"
                 strokeDasharray="3 3"
-                label=""
+                label={{ value: 'Мода', position: 'right', fill: '#EF4444' }}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -213,28 +214,36 @@ export default function ForecastModule() {
 
         {/* 3.3 Тепловая карта */}
         <section>
-        <h3 className="text-xl font-semibold mb-2">Тепловая карта прогнозов</h3>
-        <div className="bg-white rounded-lg shadow p-4">
-        <HeatMap
-          xLabels={seasons}
-          yLabels={rowLabels}
-          data={heatmapData}
-          squares
-          height={40}
-          width={100}
-          cellStyle={(background, value, min, max) => {
-            // вычисляем относительную яркость (0…100)
-            const ratio = (value - min) / (max - min);
-            const lightness = 100 - Math.round(ratio * 100);
-            return {
-              background: `hsl(200, 80%, ${lightness}%)`,
-              color: lightness < 50 ? '#fff' : '#000',
-              fontSize: '0.8rem'
-            };
-          }}
-          cellRender={value => <div>{value}</div>}
-        />
-        </div>
+          <h3 className="text-xl font-semibold mb-2">Тепловая карта прогнозов</h3>
+          <div className="bg-white rounded-lg shadow p-4">
+            <div className="flex justify-between mb-2">
+              <div className="text-sm text-gray-600">Секторы</div>
+              <div className="text-sm text-gray-600">Сезоны</div>
+            </div>
+            <HeatMap
+              xLabels={seasons}
+              yLabels={rowLabels}
+              data={heatmapData}
+              squares
+              height={120}
+              width={300}
+              cellStyle={(background, value, min, max) => {
+                const ratio = (value - min) / (max - min);
+                const lightness = 100 - Math.round(ratio * 100);
+                return {
+                  background: `hsl(200, 80%, ${lightness}%)`,
+                  color: lightness < 50 ? '#fff' : '#000',
+                  fontSize: '0.9rem',
+                  padding: '8px',
+                  textAlign: 'center'
+                };
+              }}
+              cellRender={value => <div>{value}</div>}
+            />
+            <div className="mt-2 text-sm text-gray-600 text-center">
+              Урожайность (ц/га)
+            </div>
+          </div>
         </section>
 
         {/* 3.4 Рекомендации */}
@@ -242,9 +251,13 @@ export default function ForecastModule() {
         <ModuleCard
           title="Рекомендации"
           icon={FileText}
-          description={<ul className="list-disc list-inside text-sm space-y-1">
-            {recommendations.map((r, i) => <li key={i}>{r}</li>)}
-          </ul>}
+          description={
+            <div>
+              <ul className="list-disc list-inside text-sm space-y-1">
+                {recommendations.map((r, i) => <li key={i}>{r}</li>)}
+              </ul>
+            </div>
+          }
         />
       </section>
     </div>

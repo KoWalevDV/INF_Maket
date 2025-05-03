@@ -108,6 +108,7 @@ import React, { useState, useMemo } from 'react';
 import { Bell, CheckCircle, X } from 'lucide-react';          // ★ иконки lucide
 import NDVIModule from './NDVIModule';                     // наша карта
 import { fields } from '../data/fields';
+import FieldHistoryModal from './FieldHistoryModal'
 
 // ─── Мок‑данные ──────────────────────────────────────────────────────────────
 const sensorDataBySector = {
@@ -169,6 +170,7 @@ export default function AutoMonitoringModule({ fieldKey }) {
   const [newTask, setNewTask] = useState('');
   const [workLog, setWorkLog] = useState(initialWorkLog);
   const [currentTasks, setCurrentTasks] = useState(initialCurrentTasks);
+  const [showHistoryModal, setShowHistoryModal] = useState(false)
 
   // Отображаемые датчики
   const displayedSensors = useMemo(() => {
@@ -269,6 +271,25 @@ export default function AutoMonitoringModule({ fieldKey }) {
           ))}
         </ul>
       </section>
+
+      <section>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">Автомониторинг</h2>
+          <div className="flex items-center gap-4">
+            <span className="text-gray-600">Роль: Агроном</span>
+            <button
+              onClick={() => setShowHistoryModal(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+            >
+              История поля
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {showHistoryModal && (
+        <FieldHistoryModal onClose={() => setShowHistoryModal(false)} />
+      )}
     </div>
   );
 }
