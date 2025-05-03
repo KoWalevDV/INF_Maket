@@ -24,7 +24,7 @@ const risks = [
   },
   {
     id: 'pests',
-    name: 'Нашестие вредителей',
+    name: 'Нашествие вредителей',
     coords: { lat: 45.15, lng: 41.72 },
     description: 'Обнаружены очаги нашествия тли.',
     recommendations: [
@@ -41,6 +41,56 @@ const risks = [
       'Запустить антиобледенительные вентиляторы',
       'Укрыть рассаду агротекстилем'
     ]
+  },
+  {
+    id: 'disease',
+    name: 'Болезни растений',
+    coords: { lat: 45.13, lng: 41.71 },
+    description: 'Признаки мучнистой росы на листьях.',
+    recommendations: [
+      'Обработать фунгицидами',
+      'Удалить пораженные растения'
+    ]
+  },
+  {
+    id: 'wind',
+    name: 'Сильный ветер',
+    coords: { lat: 45.16, lng: 41.69 },
+    description: 'Порывы ветра до 15 м/с.',
+    recommendations: [
+      'Укрепить опоры растений',
+      'Отложить опрыскивание'
+    ]
+  },
+  {
+    id: 'flood',
+    name: 'Подтопление',
+    coords: { lat: 45.11, lng: 41.73 },
+    description: 'Скопление воды в низинах.',
+    recommendations: [
+      'Включить дренажную систему',
+      'Проверить отводные каналы'
+    ]
+  },
+  {
+    id: 'nutrient',
+    name: 'Дефицит питания',
+    coords: { lat: 45.17, lng: 41.74 },
+    description: 'Недостаток азота в почве.',
+    recommendations: [
+      'Внести азотные удобрения',
+      'Провести анализ почвы'
+    ]
+  },
+  {
+    id: 'weed',
+    name: 'Сорняки',
+    coords: { lat: 45.18, lng: 41.75 },
+    description: 'Активный рост сорняков.',
+    recommendations: [
+      'Провести механическую прополку',
+      'Применить гербициды'
+    ]
   }
 ];
 
@@ -52,45 +102,39 @@ const historicalYield = [
   { year: '2026', yield: null, forecast: 45 }
 ];
 
-// 3. Прогноз урожайности по сезонам
-const seasonalYield = [
-  { season: 'Весна', value: 12 },
-  { season: 'Лето',  value: 22 },
-  { season: 'Осень', value: 8  }
+// 3. Прогноз урожайности по месяцам
+const monthlyYield = [
+  { month: 'Июнь', value: 8 },
+  { month: 'Июль', value: 12 },
+  { month: 'Август', value: 15 },
+  { month: 'Сентябрь', value: 10 },
+  { month: 'Октябрь', value: 5 }
 ];
 
-// 4. Результаты LSTM (по сезонам)
-const lstmBySeason = [
-  { season: 'Весна', prediction: 11 },
-  { season: 'Лето',  prediction: 25 },
-  { season: 'Осень', prediction: 9  }
+// 4. Таблица прогнозов по месяцам
+const monthlyTable = [
+  { month: 'Июнь', prediction: 8 },
+  { month: 'Июль', prediction: 12 },
+  { month: 'Август', prediction: 15 },
+  { month: 'Сентябрь', prediction: 10 },
+  { month: 'Октябрь', prediction: 5 }
 ];
 
-// 5. Ещё данные LSTM (таблица, динамика, heatmap, рекомендации)
-const lstmTable = [
-  { label: 'Весна', prediction: 11 },
-  { label: 'Лето',  prediction: 25 },
-  { label: 'Осень', prediction: 9  }
-];
-const lstmTimeline = [
-  { step: 'Обработка данных', time: '00:00', value: 11 },
-  { step: 'Обучение модели',   time: '02:00', value: 20 },
-  { step: 'Валидация',         time: '03:30', value: 22 },
-  { step: 'Прогноз',           time: '04:15', value: 25 },
-];
+// 5. Тепловая карта по месяцам
 const heatmapData = [
-  [11, 25, 9],
-  [12, 24, 8],
-  [10, 23, 7]
-];
+  [8, 12, 15, 10, 5],
+  [7, 11, 14, 9, 4],
+  [6, 10, 13, 8, 3]
+].reverse();
+
+const months = ['Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь'];
+const rowLabels = ['Сектор 1', 'Сектор 2', 'Сектор 3'].reverse();
+
 const recommendations = [
   'Увеличить полив в летний период',
   'Добавить комплексные удобрения осенью',
   'Проверить дренажную систему'
 ];
-
-const seasons    = ['Весна', 'Лето', 'Осень'];
-const rowLabels  = ['Сектор 1', 'Сектор 2', 'Сектор 3'];
 
 export default function ForecastModule() {
   const [selectedRisk, setSelectedRisk] = useState(null);
@@ -104,49 +148,45 @@ export default function ForecastModule() {
         <h3 className="text-xl font-semibold mb-2 flex items-center">
           <AlertOctagon className="w-5 h-5 mr-2"/> Риски
         </h3>
-        <ul className="divide-y divide-gray-200">
-          {risks.map(risk => (
-            <li
-              key={risk.id}
-              onClick={() => setSelectedRisk(risk)}
-              className="py-3 px-4 hover:bg-gray-100 cursor-pointer flex justify-between"
-            >
-              <span>{risk.name}</span>
-              <span className="text-gray-500 text-sm">
-                [{risk.coords.lat.toFixed(2)}, {risk.coords.lng.toFixed(2)}]
-              </span>
-            </li>
-          ))}
-        </ul>
-        {selectedRisk && (
-          <div className="mt-4 p-4 bg-white rounded-lg shadow">
-            <h4 className="font-semibold mb-2">{selectedRisk.name}</h4>
-            <p className="text-sm mb-2">{selectedRisk.description}</p>
-            <ul className="list-disc list-inside text-sm space-y-1">
-              {selectedRisk.recommendations.map((rec, i) => (
-                <li key={i}>{rec}</li>
-              ))}
-            </ul>
-            <button
-              onClick={() => setSelectedRisk(null)}
-              className="mt-4 px-3 py-1 text-sm text-gray-600 hover:underline"
-            >
-              Закрыть
-            </button>
-          </div>
-        )}
+        <div className="max-h-60 overflow-y-auto">
+          <ul className="divide-y divide-gray-200">
+            {risks.map(risk => (
+              <li key={risk.id}>
+                <div
+                  onClick={() => setSelectedRisk(selectedRisk?.id === risk.id ? null : risk)}
+                  className="py-3 px-4 hover:bg-gray-100 cursor-pointer flex justify-between"
+                >
+                  <span>{risk.name}</span>
+                  <span className="text-gray-500 text-sm">
+                    [{risk.coords.lat.toFixed(2)}, {risk.coords.lng.toFixed(2)}]
+                  </span>
+                </div>
+                {selectedRisk?.id === risk.id && (
+                  <div className="px-4 py-2 bg-gray-50">
+                    <p className="text-sm mb-2">{risk.description}</p>
+                    <ul className="list-disc list-inside text-sm space-y-1">
+                      {risk.recommendations.map((rec, i) => (
+                        <li key={i} className="text-blue-600">{rec}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
-      {/* 2. Два участка: общий прогноз и LSTM по сезонам */}
+      {/* 2. Два участка: общий прогноз и прогноз по месяцам */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 2.1 Общий прогноз урожайности с линией тренда */}
         <div className="bg-white rounded-lg shadow p-4 h-64">
-          <h3 className="font-medium mb-2">Прогноз урожайности (годовой)</h3>
+          <h3 className="font-medium mb-2">Прогноз урожайности (по годам)</h3>
           <ResponsiveContainer width="100%" height="80%">
-            <BarChart data={historicalYield} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+            <BarChart data={historicalYield} margin={{ top: 5, right: 5, left: 30, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="year" />
-              <YAxis label={{ value: 'Урожайность (ц/га)', angle: -90, position: 'insideLeft' }} />
+              <YAxis label={{ value: 'Урожайность (ц/га)', angle: -90, position: 'insideLeft', offset: 15, dy: 85 }} />
               <Tooltip 
                 formatter={(value) => [`${value} ц/га`, '']}
                 labelFormatter={(label) => `Год: ${label}`}
@@ -163,70 +203,60 @@ export default function ForecastModule() {
           </ResponsiveContainer>
         </div>
 
-        {/* 2.2 LSTM-прогноз по сезонам */}
+        {/* 2.2 Прогноз по месяцам */}
         <div className="bg-white rounded-lg shadow p-4 h-64">
-          <h3 className="font-medium mb-2">LSTM прогноз по сезонам</h3>
+          <h3 className="font-medium mb-2">Прогноз урожайности</h3>
           <ResponsiveContainer width="100%" height="80%">
-            <LineChart data={lstmBySeason} margin={{ top:5, right:5, left:5, bottom:5 }}>
+            <LineChart data={monthlyYield} margin={{ top:5, right:5, left:5, bottom:5 }}>
               <CartesianGrid strokeDasharray="3 3"/>
-              <XAxis dataKey="season"/>
-              <YAxis/>
-              <Tooltip/>
-              <Line type="monotone" dataKey="prediction" stroke="#10B981" strokeWidth={2}/>
+              <XAxis dataKey="month"/>
+              <YAxis label={{ value: 'Урожайность (ц/га)', angle: -90, position: 'insideLeft', offset: 15, dy: 85 }} />
+              <Tooltip formatter={(value) => [`${value} ц/га`, '']}/>
+              <Line type="monotone" dataKey="value" stroke="#10B981" strokeWidth={2}/>
             </LineChart>
           </ResponsiveContainer>
         </div>
       </section>
 
-      {/* 3. Далее — всё остальное, связанное с LSTM */}
+      {/* 3. Таблица прогнозов */}
       <section>
-        {/* 3.1 Таблица прогнозов */}
         <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <h3 className="font-medium mb-2">Таблица LSTM-прогноза</h3>
+          <h3 className="font-medium mb-2">Таблица прогнозов</h3>
           <table className="w-full text-sm border-collapse">
             <thead className="bg-gray-100">
               <tr>
-                <th className="p-2 text-left">Сезон</th>
+                <th className="p-2 text-left">Месяц</th>
                 <th className="p-2 text-left">Прогноз</th>
               </tr>
             </thead>
             <tbody>
-              {lstmTable.map(({ label, prediction }) => (
-                <tr key={label} className="border-t">
-                  <td className="p-2">{label}</td>
+              {monthlyTable.map(({ month, prediction }) => (
+                <tr key={month} className="border-t">
+                  <td className="p-2">{month}</td>
                   <td className="p-2">{prediction} ц/га</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        </section>
+      </section>
 
-        {/* 3.2 Динамика процесса (таймлайн) */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6 h-48">
-          <h3 className="font-medium mb-2">Динамика LSTM-прогноза</h3>
-          <ul className="text-sm space-y-1">
-            {lstmTimeline.map(({ step, time }, i) => (
-              <li key={i}><strong>{time}</strong> — {step}</li>
-            ))}
-          </ul>
-        </div>
-
-        {/* 3.3 Тепловая карта */}
-        <section>
-          <h3 className="text-xl font-semibold mb-2">Тепловая карта прогнозов</h3>
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex justify-between mb-2">
-              <div className="text-sm text-gray-600">Секторы</div>
-              <div className="text-sm text-gray-600">Сезоны</div>
-            </div>
+      {/* 4. Тепловая карта */}
+      <section>
+        <h3 className="text-xl font-semibold mb-2">Тепловая карта прогнозов</h3>
+        <div className="bg-white rounded-lg shadow p-4">
+          <div className="flex justify-between mb-2">
+            <div className="text-sm text-gray-600">Секторы</div>
+            <div className="text-sm text-gray-600">Месяцы</div>
+          </div>
+          <div className="flex justify-center">
             <HeatMap
-              xLabels={seasons}
+              xLabels={months}
               yLabels={rowLabels}
               data={heatmapData}
               squares
               height={120}
-              width={300}
+              width={400}
               cellStyle={(background, value, min, max) => {
                 const ratio = (value - min) / (max - min);
                 const lightness = 100 - Math.round(ratio * 100);
@@ -240,14 +270,15 @@ export default function ForecastModule() {
               }}
               cellRender={value => <div>{value}</div>}
             />
-            <div className="mt-2 text-sm text-gray-600 text-center">
-              Урожайность (ц/га)
-            </div>
           </div>
-        </section>
+          <div className="mt-2 text-sm text-gray-600 text-center">
+            Урожайность (ц/га)
+          </div>
+        </div>
+      </section>
 
-        {/* 3.4 Рекомендации */}
-        <section>
+      {/* 5. Рекомендации */}
+      <section>
         <ModuleCard
           title="Рекомендации"
           icon={FileText}

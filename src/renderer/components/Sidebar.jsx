@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Database,ScanEye, BarChart2, ShieldAlert, MapPin } from 'lucide-react';
+import { Home, Database,ScanEye, BarChart2, ShieldAlert, MapPin, FileText } from 'lucide-react';
 
 const navItems = [
   { key: 'Security', label: 'Безопасность', icon: ShieldAlert },
@@ -8,6 +8,7 @@ const navItems = [
   { key: 'Forecast', label: 'Прогноз', icon: BarChart2 },
   { key: 'ForecastManager', label: 'Прогноз', icon: BarChart2 },
   { key: 'DroneFeed', label: 'Дроны', icon: ScanEye },
+  { key: 'ReportGenerator', label: 'Отчетность', icon: FileText },
   { key: 'FieldMap',     label: 'Карта поля',      icon: MapPin },
 ];
 

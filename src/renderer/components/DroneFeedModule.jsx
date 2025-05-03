@@ -12,7 +12,13 @@ const drones = [
   { id: 'drone1', name: 'Дрон 1', img: DRONE1, battery: 78, remaining: '45 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] },
   { id: 'drone2', name: 'Дрон 2', img: DRONE2, battery: 56, remaining: '30 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] },
   { id: 'drone3', name: 'Дрон 3', img: DRONE4, battery: 92, remaining: '60 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] },
-  { id: 'drone4', name: 'Дрон 4', img: FireField, battery: 34, remaining: '20 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] }
+  { id: 'drone4', name: 'Дрон 4', img: FireField, battery: 34, remaining: '20 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] },
+  { id: 'drone5', name: 'Дрон 5', img: DRONE1, battery: 85, remaining: '50 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] },
+  { id: 'drone6', name: 'Дрон 6', img: DRONE2, battery: 42, remaining: '25 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] },
+  { id: 'drone7', name: 'Дрон 7', img: DRONE4, battery: 67, remaining: '35 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] },
+  { id: 'drone8', name: 'Дрон 8', img: FireField, battery: 91, remaining: '55 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] },
+  { id: 'drone9', name: 'Дрон 9', img: DRONE1, battery: 23, remaining: '15 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] },
+  { id: 'drone10', name: 'Дрон 10', img: DRONE2, battery: 75, remaining: '40 мин', schedule: ['Взлет', 'Мониторинг', 'Зарядка', 'Загрузка', 'Распыление'] }
 ]
 
 export default function DroneFeedModule() {
@@ -39,19 +45,20 @@ export default function DroneFeedModule() {
       </div>
 
       {selected === 'all' ? (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-4 grid-rows-3 gap-1">
           {filtered.map(d => (
-            <div key={d.id} className="border rounded-lg shadow p-3 max-w-md">
-              <div className="relative h-48">
+            <div key={d.id} className="border rounded-lg shadow p-1">
+              <div className="relative h-36 mb-0.5">
                 <img 
                   src={d.img} 
                   alt={d.name} 
                   className="w-full h-full object-contain rounded" 
                 />
               </div>
-              <div className="mt-2 text-sm">
-                <p><span className="font-medium">Батарея:</span> {d.battery}%</p>
-                <p><span className="font-medium">Осталось:</span> {d.remaining}</p>
+              <div className="text-[10px]">
+                <p className="font-medium mb-0.5">{d.name}</p>
+                <p className="leading-tight"><span className="font-medium">Батарея:</span> {d.battery}%</p>
+                <p className="leading-tight"><span className="font-medium">Осталось:</span> {d.remaining}</p>
               </div>
             </div>
           ))}

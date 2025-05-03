@@ -8,9 +8,8 @@ import {
   Polygon
 } from 'react-leaflet';
 import L from 'leaflet';
-import { renderToStaticMarkup } from 'react-dom/server';
 import 'leaflet/dist/leaflet.css';
-import { Command, Flame, AlertTriangle, MapPin } from 'lucide-react';
+import { Flame, AlertTriangle, MapPin } from 'lucide-react';
 import { fields } from '../data/fields';
 import fireImg  from 'C:/Users/DANYA/Desktop/QTLAB/DIPLOM_NYSTIA/iis-agro-mockup/src/assets/FireField.png';
 import theftImg from 'C:/Users/DANYA/Desktop/QTLAB/DIPLOM_NYSTIA/iis-agro-mockup/src/assets/DRONE1.png';
@@ -18,17 +17,11 @@ import theftImg from 'C:/Users/DANYA/Desktop/QTLAB/DIPLOM_NYSTIA/iis-agro-mockup
 const incidentImages = {
   Пожар:      fireImg,
   Хищение: theftImg,
-  // …
 };
+
 import { allFieldPolygon, sectorPolygons } from '../data/sectorPolygons';
 
 // -------------- Конфиг данных --------------
-const drones = [
-  { id: 1, name: 'Mavic 3T', position: [45.177211, 41.707645], status: 'Мониторинг' },
-  { id: 2, name: 'Mavic 3',  position: [45.152, 41.710], status: 'Мониторинг:!ВОЗГОРАНИЕ!' },
-  { id: 3, name: 'Mavic 33', position: [45.152435, 41.677454], status: 'Мониторинг' },
-];
-
 const incidents = [
   {
     id: 'fire1',
@@ -37,7 +30,8 @@ const incidents = [
     sector: 'Сектор №2',
     description: 'Обнаружено возгорание соломы',
     recommendations: ['Вызвать пожарную службу', 'Оградить территорию'],
-    icon: Flame
+    icon: Flame,
+    detectedBy: 'Дрон 3'
   },
   {
     id: 'theft1',
@@ -46,42 +40,20 @@ const incidents = [
     sector: 'Сектор №7',
     description: 'Подозрительная активность возле склада',
     recommendations: ['Вызвать охрану', 'Проверить камеры видеонаблюдения'],
-    icon: AlertTriangle
+    icon: AlertTriangle,
+    detectedBy: 'Дрон 1'
   }
 ];
 
-// -------------- Хелперы для кастомных иконок --------------
-function createDroneIcon(rotation = 0) {
-  // рендерим белую иконку Command побольше
-  const commandSvg = renderToStaticMarkup(
-    <Command color="#fff" size={20} />
-  );
-  const html = `
-    <div style="
-      transform: rotate(${rotation}deg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-    ">
-      ${commandSvg}
-    </div>`;
-  return L.divIcon({
-    html,
-    className: '',
-    iconSize: [20, 20],
-    iconAnchor: [20, 20],
-  });
-}
-
-  function createIncidentIcon(IconComponent, color) {
-      const svg = renderToStaticMarkup(
-        <IconComponent className={`text-[${color}]`} />
-      );
-      const html = `<div style="font-size:1.4rem; color:${color};">${svg}</div>`;
-      return L.divIcon({ html, className: '', iconAnchor: [12, 12] });
-    }
+// Создаем синий маркер
+const blueIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 // -------------- Основной компонент --------------
 export default function SecurityModule({ fieldKey }) {
@@ -118,56 +90,38 @@ export default function SecurityModule({ fieldKey }) {
             />
           )}
 
-          {/* Маркеры дронов */}
-          {drones.map((d, i) => (
+          {/* Маркеры происшествий */}
+          {incidents.map(evt => (
             <Marker
-              key={d.id}
-              position={d.position}
-              icon={createDroneIcon(i * 90)} // разный угол обзора
+              key={evt.id}
+              position={evt.coords}
+              icon={blueIcon}
             >
-              <Popup>
-                <div className="font-semibold">{d.name}</div>
-                <div>Статус: {d.status}</div>
+              <Popup
+                minWidth={200}
+                maxWidth={400}
+                className="p-1"
+              >
+                <div className="flex flex-col space-y-2">
+                  <img
+                    src={incidentImages[evt.type]}
+                    alt={`Видео — ${evt.type}`}
+                    className="w-full h-32 object-cover rounded-lg mb-2"
+                  />
+                  <div className="text-sm space-y-1">
+                    <p><strong>Сектор:</strong> {evt.sector}</p>
+                    <p><strong>Коорд.:</strong> {evt.coords[0].toFixed(3)}, {evt.coords[1].toFixed(3)}</p>
+                    <p><strong>Обнаружено:</strong> {evt.detectedBy}</p>
+                    <p><strong>Угроза:</strong> {evt.description}</p>
+                    <p><strong>Рекомендации:</strong></p>
+                    <ul className="list-disc list-inside ml-4">
+                      {evt.recommendations.map((r, i) => <li key={i}>{r}</li>)}
+                    </ul>
+                  </div>
+                </div>
               </Popup>
             </Marker>
           ))}
-
-          {/* Маркеры происшествий */}
-          {incidents.map(evt => {
-            const Icon = evt.icon;
-            const color = evt.type === 'Пожар' ? 'red' : 'orange';
-            return (
-              <Marker
-                key={evt.id}
-                position={evt.coords}
-                icon={createIncidentIcon(Icon, color)}
-              >
-                <Popup
-     minWidth={200}
-     maxWidth={400}
-     className="p-1"
-   >
-      <div className="flex flex-col space-y-2">
-    {/* горизонтальный прямоугольник */}
-       <img
-         src={incidentImages[evt.type]}
-         alt={`Видео — ${evt.type}`}
-         className="w-full h-32 object-cover rounded-lg mb-2"
-       />
-       <div className="text-sm space-y-1">
-                      <p><strong>Сектор:</strong> {evt.sector}</p>
-                      <p><strong>Коорд.:</strong> {evt.coords[0].toFixed(3)}, {evt.coords[1].toFixed(3)}</p>
-                      <p><strong>Угроза:</strong> {evt.description}</p>
-                      <p><strong>Рекомендации:</strong></p>
-                      <ul className="list-disc list-inside ml-4">
-                        {evt.recommendations.map((r, i) => <li key={i}>{r}</li>)}
-                      </ul>
-                    </div>
-                  </div>
-                </Popup>
-              </Marker>
-            );
-          })}
         </MapContainer>
       </div>
 

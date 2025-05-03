@@ -21,7 +21,7 @@
 //   return (
 //     <MapContainer bounds={bounds} className="w-full h-full">
 //       <WMSTileLayer
-//         // Sentinel Hub WMS URL
+//         // Sentinel Hub WMS URL
 //         url={`https://services.sentinel-hub.com/ogc/wms/${INSTANCE_ID}`}
 //         layers={NDVI_LAYER}           // точно как в Capabilities
 //         styles="COLOR_MAP"            // любой стиль из Capabilities
@@ -32,7 +32,7 @@
 //         crs={L.CRS.EPSG3857}
 //         // диапазон лучше одной даты
 //         time="2025-04-25/2025-05-02"
-//         attribution="© Sentinel Hub"
+//         attribution="© Sentinel Hub"
 //       />
 
 //       <Polygon positions={allFieldPolygon}
@@ -48,7 +48,7 @@
 // src/renderer/components/NDVIModule.jsx
 import React, { useState } from 'react';
 import L from 'leaflet';
-import { MapContainer, WMSTileLayer, Polygon } from 'react-leaflet';
+import { MapContainer, WMSTileLayer, Polygon, TileLayer } from 'react-leaflet';
 import { allFieldPolygon, sectorPolygons } from '../data/sectorPolygons';
 
 const INSTANCE_ID = '75e992b4-767b-43e6-92c2-496fb353e65c';
@@ -68,7 +68,13 @@ export default function NDVIModule({ fieldKey, bounds }) {
       className="w-full h-full"
       whenReady={() => setReady(true)}>
 
-      {/*  Добавляем слой только после fitBounds  */}
+      {/* Спутниковая подложка */}
+      <TileLayer
+        attribution="Tiles © Esri"
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+      />
+
+      {/*  Добавляем NDVI слой только после fitBounds  */}
       {mapReady && (
         <WMSTileLayer
           url={`https://services.sentinel-hub.com/ogc/wms/${INSTANCE_ID}`}
@@ -78,21 +84,21 @@ export default function NDVIModule({ fieldKey, bounds }) {
           transparent
           version="1.3.0"
           crs={L.CRS.EPSG3857}
-          time="2025-04-25/2025-05-02"      // любой диапазон ≤ 30 дней
+          time="2025-04-25/2025-05-02"      // любой диапазон ≤ 30 дней
           noWrap                            // ← важно!
           bounds={bounds}                   // ← важно!
-          attribution="© Sentinel Hub"
+          attribution="© Sentinel Hub"
         />
       )}
 
       {/* серый контур всего поля */}
       <Polygon positions={allFieldPolygon}
-               pathOptions={{ color:'#888', weight:2, fillOpacity:0 }} />
+               pathOptions={{ color:'yellow', weight:2, fillOpacity:0 }} />
 
       {/* подсветка выбранного сектора */}
       {highlight && (
         <Polygon positions={highlight}
-                 pathOptions={{ color:'green', weight:2, fillOpacity:0.2 }} />
+                 pathOptions={{ color:'purple', weight:2, fillOpacity:0.2 }} />
       )}
     </MapContainer>
   );

@@ -63,27 +63,34 @@ export default function ForecastManager() {
       {/* Прогнозирование поломок */}
       <section>
         <h2 className="text-xl font-semibold mb-4">Прогнозирование поломок</h2>
-        {canPredictions.map(p => (
-          <div
-            key={p.id}
-            className={
-              p.status === 'alert'
-                ? 'flex items-center p-3 mb-2 rounded-lg bg-red-100 text-red-800'
-                : 'flex items-center p-3 mb-2 rounded-lg bg-blue-100 text-blue-800'
-            }
-          >
-            {p.status === 'alert' ? (
-              <AlertCircle className="w-6 h-6 mr-3 text-red-600" />
-            ) : (
-              <AlertTriangle className="w-6 h-6 mr-3 text-blue-600" />
-            )}
-            <div className="flex-1">
-              <span className="font-semibold">{p.id}</span>:&nbsp;
-              <span className="italic">{p.issue}</span>&nbsp;— рекомендация:&nbsp;
-              <span>{p.recommendation}</span>
-            </div>
+        <div className="space-y-2">
+          <div className="grid grid-cols-3 gap-4 px-3 font-medium text-gray-600">
+            <div>Номер CAN-шины</div>
+            <div>Поломка</div>
+            <div>Рекомендация</div>
           </div>
-        ))}
+          {canPredictions.map(p => (
+            <div
+              key={p.id}
+              className={
+                p.status === 'alert'
+                  ? 'flex items-center p-3 rounded-lg bg-red-100 text-red-800'
+                  : 'flex items-center p-3 rounded-lg bg-blue-100 text-blue-800'
+              }
+            >
+              {p.status === 'alert' ? (
+                <AlertCircle className="w-6 h-6 mr-3 text-red-600" />
+              ) : (
+                <AlertTriangle className="w-6 h-6 mr-3 text-blue-600" />
+              )}
+              <div className="flex-1 grid grid-cols-3 gap-4">
+                <div className="font-medium">{p.id}</div>
+                <div>{p.issue}</div>
+                <div>{p.recommendation}</div>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Запланированные ремонтные работы */}
